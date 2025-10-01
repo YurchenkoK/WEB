@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Главная - Pfizer</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1 class="logo">Pfizer</h1>
+        <div class="search-section">
+            <form method="GET" action="{% url 'index' %}" style="display: inline-flex; align-items: center;">
+                <input type="text" name="search" placeholder="Поиск по названию" class="search-input" value="{{ search_query|default:'' }}">
+                <button type="submit" class="search-button">Найти</button>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="drugs-grid">
+            {% if data.drugs %}
+                {% for drug in data.drugs %}
+                    <div class="drug-card">
+                        {% if drug.image|slice:":4" == "http" %}
+                            <img src="{{ drug.image }}" alt="{{ drug.name }}" class="drug-image">
+                        {% else %}
+                            <img src="{% static drug.image %}" alt="{{ drug.name }}" class="drug-image">
+                        {% endif %}
+                        <h3 class="drug-name">{{ drug.name }}</h3>
+                        <p class="drug-concentration">Концентрация в ампуле: {{ drug.concentration }}</p>
+                        <a href="{% url 'drug_detail' drug.id %}" class="details-button">Подробнее</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Препараты не найдены</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-icon">
+            <a href="{% url 'cart' %}" class="cart-icon-link">
+                <div class="icon-circle">
+                    <span class="microscope">🔬</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <title>{{ drug.name }} - Pfizer</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1 class="logo">Pfizer</h1>
+    </div>
+    <div class="container">
+        <div class="drug-detail">
+            <div class="drug-detail-image">
+                {% if drug.image|slice:":4" == "http" %}
+                    <img src="{{ drug.image }}" alt="{{ drug.name }}">
+                {% else %}
+                    <img src="{% static drug.image %}" alt="{{ drug.name }}">
+                {% endif %}
+            </div>
+            <div class="drug-detail-info">
+                <h2 class="drug-detail-title">{{ drug.name }}</h2>
+                <div class="drug-params">
+                    <p><strong>Концентрация ампулы:</strong> {{ drug.concentration }}</p>
+                    <p><strong>Объём ампулы:</strong> {{ drug.volume }}{% if drug.volume == '5 мл' %}, 5 мл, 10 мл{% endif %}</p>
+                    <p><strong>Показания:</strong> {{ drug.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-icon">
+            <a href="{% url 'cart' %}" class="cart-icon-link">
+                <div class="icon-circle">
+                    <span class="microscope">🔬</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

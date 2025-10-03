@@ -3,8 +3,7 @@ from django.urls import path
 from ssr_inMemory import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('drug/<int:drug_id>/', views.drug_detail, name='drug_detail'),  # Правильно: drug_id
-    path('cart/', views.cart, name='cart'),
+    path('vasoactive_drug/<int:drug_id>/', views.vasoactive_drug_detail, name='vasoactive_drug_detail'),
+    path('estimation_infusion_speed/', views.estimation_infusion_speed, name='estimation_infusion_speed'),
 ]

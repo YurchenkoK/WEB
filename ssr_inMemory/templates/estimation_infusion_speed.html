@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Корзина - Pfizer</title>
+    <title>Расчёт инфузии - Pfizer</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
@@ -17,22 +17,21 @@
             <div class="calculator-form">
                 <div class="form-row">
                     <label>Количество ампул:</label>
-                    <input type="text" placeholder="Введите кол-во" class="calc-input">
+                    <input type="text" placeholder="Введите кол-во" class="calc-input" value="{{ data.estimation_params.ampoules }}">
                 </div>
                 <div class="form-row">
                     <label>Объём растворителя:</label>
-                    <input type="text" placeholder="Введите объём" class="calc-input">
+                    <input type="text" placeholder="Введите объём" class="calc-input" value="{{ data.estimation_params.solvent_volume }}">
                 </div>
                 <div class="form-row">
                     <label>Масса пациента:</label>
-                    <input type="text" placeholder="Введите массу" class="calc-input">
+                    <input type="text" placeholder="Введите массу" class="calc-input" value="{{ data.estimation_params.patient_weight }}">
                 </div>
-                <button type="button" class="calculate-button">Рассчитать</button>
             </div>
         </div>
         
         <div class="results-section">
-            {% for item in data.cart_items %}
+            {% for item in data.estimation_items %}
                 <div class="result-card">
                     <div class="drug-info">
                         {% if item.image|slice:":4" == "http" %}
@@ -53,19 +52,12 @@
                         </div>
                         <div class="spec-item infusion-speed">
                             <span class="spec-label">Скорость инфузии:</span>
-                            <span class="spec-value-result"></span>
+                            <span class="spec-value-result">{{ item.infusion_speed }} мл/кг/ч</span>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-    </div>
-    <div class="footer">
-        <a href="{% url 'index' %}" class="cart-icon-link">
-            <div class="icon-circle">
-                <span class="microscope">🔬</span>
-            </div>
-        </a>
     </div>
 </body>
 </html>

@@ -1,111 +1,40 @@
 from django.shortcuts import render
-from django.http import Http404
+from .static.static_data import drugs_data, estimation_data
 
 def get_data():
-    return {
-        'drugs': [
-            {
-                'id': 1,
-                'name': 'Допамин',
-                'concentration': '40 мг/мл',
-                'image': 'http://localhost:9000/images/dopamine.png',
-                'volume': '5 мл',
-                'description': 'Допамин - предшественник норадреналина, стимулирует допаминовые и адренергические рецепторы.'
-            },
-            {
-                'id': 2,
-                'name': 'Нитроглицерин',
-                'concentration': '1 мг/мл',
-                'image': 'http://localhost:9000/images/nitroglic.jpg',
-                'volume': '1 мл',
-                'description': 'Нитроглицерин - органический нитрат, используется для лечения стенокардии и сердечной недостаточности.'
-            },
-            {
-                'id': 3,
-                'name': 'Норадреналин',
-                'concentration': '2 мг/мл',
-                'image': 'http://localhost:9000/images/Norenadren.png',
-                'volume': '4 мл',
-                'description': 'Норадреналин - мощный вазоконстриктор, используется при шоке и артериальной гипотензии.'
-            },
-            {
-                'id': 4,
-                'name': 'Адреналин',
-                'concentration': '1 мг/мл',
-                'image': 'http://localhost:9000/images/EpiVial.jpg',
-                'volume': '1 мл',
-                'description': 'Адреналин - катехоламин широкого спектра действия, используется при анафилактическом шоке.'
-            },
-            {
-                'id': 5,
-                'name': 'Добутамин',
-                'concentration': '12.5 мг/мл',
-                'image': 'http://localhost:9000/images/DOBUTAMINEl.png',
-                'volume': '20 мл',
-                'description': 'Добутамин - селективный агонист β1-адренорецепторов, кардиотоник при сердечной недостаточности.'
-            },
-            {
-                'id': 6,
-                'name': 'Милринон',
-                'concentration': '1 мг/мл',
-                'image': 'http://localhost:9000/images/Milrinonepackvial.png',
-                'volume': '10 мл',
-                'description': 'Милринон - ингибитор фосфодиэстеразы III, положительный инотроп и вазодилататор.'
-            },
-            {
-                'id': 7,
-                'name': 'Фенилэфрин',
-                'concentration': '10 мг/мл',
-                'image': 'http://localhost:9000/images/phenylephirine.jpg',
-                'volume': '1 мл',
-                'description': 'Фенилэфрин - селективный α1-адреномиметик, вызывает вазоконстрикцию при гипотензии.'
-            },
-            {
-                'id': 8,
-                'name': 'Вазопрессин',
-                'concentration': '20 мг/мл',
-                'image': 'http://localhost:9000/images/Vasopresin.png',
-                'volume': '1 мл',
-                'description': 'Вазопрессин - антидиуретический гормон, мощный вазоконстриктор при рефрактерном шоке.'
-            },
-            {
-                'id': 9,
-                'name': 'Левосимендан',
-                'concentration': '2.5 мг/мл',
-                'image': 'http://localhost:9000/images/levosemindan.jpg',
-                'volume': '5 мл',
-                'description': 'Левосимендан - кальциевый сенситайзер, инотропный препарат при острой сердечной недостаточности.'
-            },
-            {
-                'id': 10,
-                'name': 'Изопреналин',
-                'concentration': '0.2 мг/мл',
-                'image': 'http://localhost:9000/images/isopreterenol.png',
-                'volume': '1 мл',
-                'description': 'Изопреналин - неселективный β-адреномиметик, используется при брадикардии и AV-блокадах.'
-            }
-        ]
-    }
+    drugs = []
+    for drug in drugs_data:
+        drugs.append({
+            'id': drug[0],
+            'name': drug[1],
+            'description': drug[2],
+            'image': drug[3],
+            'concentration': f'{drug[4]} мг/мл',
+            'volume': f'{drug[5]} мл',
+        })
+    
+    return {'drugs': drugs}
 
-def get_cart_data():
-    return {
-        'cart_items': [
-            {
-                'id': 2,
-                'name': 'Нитроглицерин',
-                'concentration': '1 мг/мл',
-                'volume': '5 мл',
-                'image': 'img/nitroglicerin.png',
-            },
-            {
-                'id': 1,
-                'name': 'Допамин',
-                'concentration': '40 мг/мл',
-                'volume': '2 мл',
-                'image': 'img/dopamin.png',
-            },
-        ]
-    }
+def get_estimation_data():
+    estimation_drugs = estimation_data[0]
+    estimation_items = []
+    
+    for estimation_drug in estimation_drugs:
+        drug_id = estimation_drug[0]
+        infusion_speed = estimation_drug[2]
+        for drug in drugs_data:
+            if drug[0] == drug_id:
+                estimation_items.append({
+                    'id': drug[0],
+                    'name': drug[1],
+                    'concentration': f'{drug[4]} мг/мл',
+                    'volume': f'{drug[5]} мл',
+                    'image': drug[3],
+                    'infusion_speed': infusion_speed,
+                })
+                break
+    
+    return {'estimation_items': estimation_items}
 
 def index(request):
     data = get_data()
@@ -118,9 +47,12 @@ def index(request):
                 filtered_drugs.append(drug)
         data['drugs'] = filtered_drugs
     
+    estimation_count = len(estimation_data[0])
+    data['estimation_count'] = estimation_count
+    
     return render(request, 'main.html', {'data': data, 'search_query': search_query})
 
-def drug_detail(request, drug_id):
+def vasoactive_drug_detail(request, drug_id):
     data = get_data()
     drug = None
     
@@ -129,11 +61,18 @@ def drug_detail(request, drug_id):
             drug = d
             break
     
-    if drug is None:
-        raise Http404("Препарат не найден")
+    estimation_count = len(estimation_data[0])
     
-    return render(request, 'product.html', {'drug': drug})
+    return render(request, 'vasoactive_drug.html', {'drug': drug, 'estimation_count': estimation_count})
 
-def cart(request):
-    data = get_cart_data()
-    return render(request, 'cart.html', {'data': data})
+def estimation_infusion_speed(request):
+    data = get_estimation_data()
+    
+    estimation_params = {
+        'ampoules': int(estimation_data[1][0]),
+        'solvent_volume': estimation_data[1][1],
+        'patient_weight': estimation_data[1][2],
+    }
+    
+    data['estimation_params'] = estimation_params
+    return render(request, 'estimation_infusion_speed.html', {'data': data})

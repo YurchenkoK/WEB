@@ -30,13 +30,14 @@
         </div>
     </div>
     <div class="footer">
-        <div class="footer-icon">
-            <a href="{% url 'cart' %}" class="cart-icon-link">
-                <div class="icon-circle">
-                    <span class="microscope">🔬</span>
-                </div>
-            </a>
-        </div>
+        <a href="{% url 'estimation_infusion_speed' %}" class="cart-icon-link">
+            <div class="icon-circle">
+                <span class="microscope">🔬</span>
+                {% if estimation_count > 0 %}
+                    <span class="cart-badge">{{ estimation_count }}</span>
+                {% endif %}
+            </div>
+        </a>
     </div>
 </body>
 </html>

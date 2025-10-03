@@ -21,28 +21,27 @@
     </div>
     <div class="container">
         <div class="drugs-grid">
-            {% if data.drugs %}
-                {% for drug in data.drugs %}
-                    <div class="drug-card">
-                        {% if drug.image|slice:":4" == "http" %}
-                            <img src="{{ drug.image }}" alt="{{ drug.name }}" class="drug-image">
-                        {% else %}
-                            <img src="{% static drug.image %}" alt="{{ drug.name }}" class="drug-image">
-                        {% endif %}
-                        <h3 class="drug-name">{{ drug.name }}</h3>
-                        <p class="drug-concentration">Концентрация в ампуле: {{ drug.concentration }}</p>
-                        <a href="{% url 'drug_detail' drug.id %}" class="details-button">Подробнее</a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>Препараты не найдены</p>
-            {% endif %}
+            {% for drug in data.drugs %}
+                <div class="drug-card">
+                    {% if drug.image|slice:":4" == "http" %}
+                        <img src="{{ drug.image }}" alt="{{ drug.name }}" class="drug-image">
+                    {% else %}
+                        <img src="{% static drug.image %}" alt="{{ drug.name }}" class="drug-image">
+                    {% endif %}
+                    <h3 class="drug-name">{{ drug.name }}</h3>
+                    <p class="drug-concentration">Концентрация в амп.: {{ drug.concentration }}</p>
+                    <a href="{% url 'vasoactive_drug_detail' drug.id %}" class="details-button">Подробнее</a>
+                </div>
+            {% endfor %}
         </div>
     </div>
     <div class="footer">
-        <a href="{% url 'cart' %}" class="cart-icon-link">
+        <a href="{% url 'estimation_infusion_speed' %}" class="cart-icon-link">
             <div class="icon-circle">
                 <span class="microscope">🔬</span>
+                {% if data.estimation_count > 0 %}
+                    <span class="cart-badge">{{ data.estimation_count }}</span>
+                {% endif %}
             </div>
         </a>
     </div>

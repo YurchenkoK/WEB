@@ -12,10 +12,9 @@ body {
 
 .header {
     background-color: #ffffff;
-    padding: 0 60px;
+    padding: 0 35px;
     border-top: 15px solid transparent;
     border-bottom: 15px solid transparent;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .logo {
@@ -51,7 +50,7 @@ body {
     padding: 16px 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 400px;
+    width: 350px;
     font-size: 14px;
     background-color: #ffffff;
 }
@@ -91,13 +90,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 280px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     position: relative;
     transition: box-shadow 0.2s;
-}
-
-.drug-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .drug-image {
@@ -111,13 +105,13 @@ body {
 .drug-name {
     font-size: 16px;
     font-weight: bold;
-    margin: 0 0 8px 0;
+    margin: 0 0 12px 0;
     color: #000;
 }
 
 .drug-concentration {
     color: #666;
-    margin: 0 0 50px 0;
+    margin: 0 0 60px 0;
     font-size: 13px;
     line-height: 1.4;
     flex-grow: 1;
@@ -169,14 +163,6 @@ body {
     margin: 15px 0;
 }
 
-.cart-section {
-    background: #e5e5e5;
-    padding: 15px 20px;
-    border-radius: 15px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 .cart-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -192,15 +178,6 @@ body {
     color: #000;
 }
 
-.calculator-title-outside {
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 15px;
-    margin-top: 10px;
-    color: #333;
-}
-
 .infusion-calculator {
     background: #ffffff;
     padding: 40px 50px;
@@ -209,7 +186,6 @@ body {
     max-width: 650px;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .calculator-form {
@@ -240,6 +216,8 @@ body {
     font-family: Arial, sans-serif;
     font-size: 14px;
     flex: 1;
+    min-width: 0;
+    max-width: 350px;
     background-color: #f8f9fa;
     color: #333;
 }
@@ -250,29 +228,11 @@ body {
     color: #999;
 }
 
-.calculate-button {
-    background-color: #2E29FF;
-    color: white;
-    padding: 16px 40px;
-    border: none;
-    border-radius: 30px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    transition: background-color 0.2s;
-}
-
-.calculate-button:hover {
-    background-color: #2519CC;
-}
-
 .results-section {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 1100px;
+    max-width: 850px;
     margin: 0 auto;
 }
 
@@ -280,17 +240,16 @@ body {
     display: flex;
     align-items: center;
     background-color: #ffffff;
-    padding: 25px 30px;
+    padding: 15px 25px;
     border-radius: 20px;
-    gap: 40px;
+    gap: 45px;
     min-height: 100px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .drug-info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
     min-width: 250px;
     flex-shrink: 0;
 }
@@ -310,7 +269,8 @@ body {
 
 .drug-specs {
     display: flex;
-    gap: 50px;
+    max-width: 200px;
+    gap: 45px;
     flex-grow: 1;
     align-items: center;
     justify-content: flex-start;
@@ -321,6 +281,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    min-width: 140px;
 }
 
 .spec-label {
@@ -341,6 +302,7 @@ body {
 }
 
 .infusion-speed {
+    margin-left: 0px;
     flex-direction: column;
     align-items: flex-start;
 }
@@ -376,13 +338,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(46, 41, 255, 0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
+    position: relative;
 }
 
 .icon-circle:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(46, 41, 255, 0.4);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid #F8F8F8;
 }
 
 .microscope {

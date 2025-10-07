@@ -6,7 +6,8 @@ drugs_data = [
         "http://localhost:9000/images/dopamine.png",
         40.0,
         5.0,
-        1.0
+        2.0,
+        20.0
     ],
     [
         2,
@@ -15,7 +16,8 @@ drugs_data = [
         "http://localhost:9000/images/nitroglic.jpg",
         1.0,
         1.0,
-        1.0
+        0.5,
+        10.0
     ],
     [
         3,
@@ -24,7 +26,8 @@ drugs_data = [
         "http://localhost:9000/images/Norenadren.png",
         2.0,
         4.0,
-        1.0
+        0.05,
+        3.0
     ],
     [
         4,
@@ -33,6 +36,7 @@ drugs_data = [
         "http://localhost:9000/images/EpiVial.jpg",
         1.0,
         1.0,
+        0.01,
         1.0
     ],
     [
@@ -42,7 +46,8 @@ drugs_data = [
         "http://localhost:9000/images/DOBUTAMINEl.png",
         12.5,
         20.0,
-        1.0
+        2.0,
+        20.0
     ],
     [
         6,
@@ -51,7 +56,8 @@ drugs_data = [
         "http://localhost:9000/images/Milrinonepackvial.png",
         1.0,
         10.0,
-        1.0
+        0.375,
+        0.75
     ],
     [
         7,
@@ -60,7 +66,8 @@ drugs_data = [
         "http://localhost:9000/images/phenylephirine.jpg",
         10.0,
         1.0,
-        1.0
+        0.5,
+        3.0
     ],
     [
         8,
@@ -69,7 +76,8 @@ drugs_data = [
         "http://localhost:9000/images/Vasopresin.png",
         20.0,
         1.0,
-        1.0
+        0.01,
+        0.04
     ],
     [
         9,
@@ -78,7 +86,8 @@ drugs_data = [
         "http://localhost:9000/images/levosemindan.jpg",
         2.5,
         5.0,
-        1.0
+        0.05,
+        0.2
     ],
     [
         10,
@@ -87,18 +96,12 @@ drugs_data = [
         "http://localhost:9000/images/isopreterenol.png",
         0.2,
         1.0,
-        1.0
+        0.02,
+        0.2
     ]
 ]
 
 estimation_data = [
-    [
-        [2, 2, 0.05],
-        [1, 1, 0.34]   
-    ],
-    [
-        3,
-        250,
-        70,
-    ]
+    [1, 2],
+    [1, 1],
 ]

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .static.static_data import drugs_data, estimation_data
 
+CURRENT_USER_ID = 1
+
 def get_data():
     drugs = []
     for drug in drugs_data:
@@ -11,17 +13,20 @@ def get_data():
             'image': drug[3],
             'concentration': f'{drug[4]} мг/мл',
             'volume': f'{drug[5]} мл',
+            'min_dose': drug[6],
+            'max_dose': drug[7],
         })
     
     return {'drugs': drugs}
 
 def get_estimation_data():
-    estimation_drugs = estimation_data[0]
     estimation_items = []
     
-    for estimation_drug in estimation_drugs:
-        drug_id = estimation_drug[0]
-        infusion_speed = estimation_drug[2]
+    user_drugs = [item for item in estimation_data if item[0] == CURRENT_USER_ID]
+    
+    for user_drug in user_drugs:
+        drug_id = user_drug[1]
+        
         for drug in drugs_data:
             if drug[0] == drug_id:
                 estimation_items.append({
@@ -30,7 +35,8 @@ def get_estimation_data():
                     'concentration': f'{drug[4]} мг/мл',
                     'volume': f'{drug[5]} мл',
                     'image': drug[3],
-                    'infusion_speed': infusion_speed,
+                    'min_dose': drug[6],
+                    'max_dose': drug[7],
                 })
                 break
     
@@ -47,7 +53,7 @@ def index(request):
                 filtered_drugs.append(drug)
         data['drugs'] = filtered_drugs
     
-    estimation_count = len(estimation_data[0])
+    estimation_count = len([item for item in estimation_data if item[0] == CURRENT_USER_ID])
     data['estimation_count'] = estimation_count
     
     return render(request, 'main.html', {'data': data, 'search_query': search_query})
@@ -61,7 +67,7 @@ def vasoactive_drug_detail(request, drug_id):
             drug = d
             break
     
-    estimation_count = len(estimation_data[0])
+    estimation_count = len([item for item in estimation_data if item[0] == CURRENT_USER_ID])
     
     return render(request, 'vasoactive_drug.html', {'drug': drug, 'estimation_count': estimation_count})
 
@@ -69,9 +75,9 @@ def estimation_infusion_speed(request):
     data = get_estimation_data()
     
     estimation_params = {
-        'ampoules': int(estimation_data[1][0]),
-        'solvent_volume': estimation_data[1][1],
-        'patient_weight': estimation_data[1][2],
+        'ampoules': 3,
+        'solvent_volume': 250,
+        'patient_weight': 70,
     }
     
     data['estimation_params'] = estimation_params

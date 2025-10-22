@@ -30,10 +30,7 @@
                         <label>Масса пациента (кг):</label>
                         <input type="number" name="patient_weight" step="0.01" min="0.01" class="calc-input" value="{{ data.estimation_params.patient_weight }}">
                     </div>
-                    <div class="form-row button-row">
-                        <button type="submit" class="search-button button-flex">
-                            Рассчитать скорость инфузии
-                        </button>
+                    <div class="form-row button-row" style="justify-content: center;">
                         {% if data.order_id %}
                             {% if data.estimation_params.ampoules and data.estimation_params.solvent_volume and data.estimation_params.patient_weight %}
                             <button type="button" class="search-button button-flex button-success" 

@@ -1,95 +1,101 @@
 from rest_framework import serializers
 from stocks.models import Drug, Order, DrugInOrder
-from django.contrib.auth.models import User
 from collections import OrderedDict
 
 
 class DrugSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Drug
-        fields = ["id", "name", "description", "image_url", "concentration", "volume", "is_active"]
+    image_url = serializers.SerializerMethodField()
     
-    def get_fields(self):
-        new_fields = OrderedDict()
-        for name, field in super().get_fields().items():
-            field.required = False
-            new_fields[name] = field
-        return new_fields
-
-
-class FullDrugSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drug
-        fields = ["id", "name", "description", "image_url", "concentration", "volume", "is_active"]
+        fields = ["id", "name", "description", "concentration", "volume", "image_url"]
+        read_only_fields = ['id', 'image_url']
+    
+    def get_image_url(self, obj):
+        return obj.image_url if obj.image_url else None
 
 
 class DrugInOrderSerializer(serializers.ModelSerializer):
-    drug_id = serializers.IntegerField(source='drug.id', read_only=True)
-    drug_name = serializers.CharField(source='drug.name', read_only=True)
+    drug = serializers.PrimaryKeyRelatedField(
+        queryset=Drug.objects.filter(is_active=True)
+    )
+    order = serializers.PrimaryKeyRelatedField(
+        queryset=Order.objects.all()
+    )
     
     class Meta:
         model = DrugInOrder
-        fields = ["id", "drug_id", "drug_name", "ampoule_volume", "infusion_speed", "drug_rate"]
+        fields = [
+            'id',
+            'order',
+            'drug',
+            'ampoule_volume',
+            'infusion_speed',
+            'async_calculation_result',
+        ]
+        read_only_fields = ['id']
+    
+    def update(self, instance, validated_data):
+        validated_data.pop('drug', None)
+        return super().update(instance, validated_data)
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    creator = serializers.SlugRelatedField(slug_field='username', read_only=True)
-    moderator = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    # Removed nested 'items' from all Order responses per API requirement
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'creator',
+            'moderator',
+            'status',
+            'creation_datetime',
+            'formation_datetime',
+            'completion_datetime',
+            'ampoules_count',
+            'solvent_volume',
+            'patient_weight'
+        ]
+        read_only_fields = ['id', 'creator', 'moderator', 'status', 'creation_datetime', 'formation_datetime', 'completion_datetime']
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    """Serializer for order list view — excludes item details to keep list compact."""
+    async_results_count = serializers.SerializerMethodField()
+    items = serializers.SerializerMethodField()
     
     class Meta:
         model = Order
-        fields = ["id", "status", "creation_datetime", "formation_datetime", 
-                  "completion_datetime", "creator", "moderator", "ampoules_count", 
-                  "solvent_volume", "patient_weight"]
-        read_only_fields = ["creation_datetime", "formation_datetime", "completion_datetime", 
-                           "creator", "moderator", "status"]
+        fields = [
+            'id',
+            'creator',
+            'moderator',
+            'status',
+            'creation_datetime',
+            'formation_datetime',
+            'completion_datetime',
+            'ampoules_count',
+            'solvent_volume',
+            'patient_weight',
+            'async_results_count',
+            'items'
+        ]
+        read_only_fields = ['id', 'creator', 'moderator', 'status', 'creation_datetime', 'formation_datetime', 'completion_datetime']
     
-    def get_fields(self):
-        new_fields = OrderedDict()
-        for name, field in super().get_fields().items():
-            field.required = False
-            new_fields[name] = field
-        return new_fields
-
-
-class FullOrderSerializer(serializers.ModelSerializer):
-    creator = serializers.SlugRelatedField(slug_field='username', read_only=True)
-    moderator = serializers.SlugRelatedField(slug_field='username', read_only=True)
-    drugs = serializers.SerializerMethodField()
+    def get_async_results_count(self, obj):
+        """Возвращает количество DrugInOrder с заполненным async_calculation_result"""
+        return obj.items.filter(async_calculation_result__isnull=False).exclude(async_calculation_result='').count()
     
-    class Meta:
-        model = Order
-        fields = ["id", "status", "creation_datetime", "formation_datetime", 
-                  "completion_datetime", "creator", "moderator", "ampoules_count", 
-                  "solvent_volume", "patient_weight", "drugs"]
-        read_only_fields = ["creation_datetime", "formation_datetime", "completion_datetime", 
-                           "creator", "moderator"]
-    
-    def get_drugs(self, obj):
-        drug_in_orders = DrugInOrder.objects.filter(order=obj)
-        return [{
-            "id": dio.id,
-            "drug_id": dio.drug.id,
-            "drug_name": dio.drug.name,
-            "ampoule_volume": dio.ampoule_volume,
-            "infusion_speed": dio.infusion_speed,
-            "drug_rate": dio.drug_rate
-        } for dio in drug_in_orders]
+    def get_items(self, obj):
+        """Возвращает массив ID препаратов в заявке"""
+        return list(obj.items.values_list('drug_id', flat=True))
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "first_name", "last_name", "email"]
-
-
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    
-    class Meta:
-        model = User
-        fields = ["username", "password", "first_name", "last_name", "email"]
-    
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+class UserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+    is_staff = serializers.BooleanField(read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
